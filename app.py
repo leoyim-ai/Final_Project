@@ -24,12 +24,13 @@ client = CLANKER(api_key=st.secrets["APIKEY"])
 if "done" not in st.session_state:
     st.session_state.done = False
 
+
 user_input = st.text_input("Enter text here", disabled=st.session_state.done)
 
-if st.button("Submit") and user_input.strip():
+placeholder = st.empty()
+if placeholder.button("Submit", disabled=st.session_state.done) and user_input.strip():
 
-    st.session_state.done = True
-
+   
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -53,17 +54,17 @@ if st.button("Submit") and user_input.strip():
     )
 
     result_text = completion.choices[0].message.content
-
-    st.write("Raw output:")
-    st.code(result_text)
-
+    
     try:
         data = json.loads(result_text)
+        placeholder.empty()
 
         st.subheader("Results")
-        st.write(f"**Lie chance:** {data['percentage']}%")
+        st.slider(f"**Lie chance:** {data['percentage']}%", 0, 100, data['percentage'],disabled=True)
         st.write(f"**Lying Words Found:** {data['lying_words']}")
         st.write(f"**Explanation:** {data['explanation']}")
+        st.session_state.done = True
+
 
     except:
-        st.error("Model did not return valid JSON")
+        st.error("did not return valid JSON")
