@@ -4,7 +4,6 @@ import json
 
 st.title("Lie Detection App")
 
-# Word lists
 lying_words = [
     "Maybe","Probably","I think","Kind of","Sort of",
     "Essentially","Basically","As far as I know",
